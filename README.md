@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FlowDay
+
+A calm, Sunsama-inspired productivity web application built with Next.js 16, TypeScript, Tailwind CSS v4, Framer Motion, Recharts, and Zustand.
+
+**Tagline:** Plan your day without feeling overwhelmed.
+
+## Features
+
+- **Daily Planner** — Task management with priorities, tags, and progress tracking
+- **Calendar Time Blocking** — Visual hourly schedule (6 AM–10 PM) with drag-and-drop
+- **Focus Mode** — Pomodoro timer with streaks, stats, and confetti celebrations
+- **Analytics** — Weekly charts, mood trends, productivity score
+- **AI Planner** — Smart scheduling suggestions via chat interface
+- **Reminders** — Scheduled nudges with repeat options (once, daily, weekly)
+- **Integrations** — Google Calendar, Notion, Slack, and more (UI mock)
+- **Dark Mode** — Toggle with localStorage persistence
+- **Landing Page** — Marketing site with pricing, FAQ, testimonials
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+cd flowday
+npm install
+cp .env.example .env.local   # add your Supabase URL + key
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) for the landing page, or [http://localhost:3000/dashboard](http://localhost:3000/dashboard) for the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Supabase setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Copy your project URL and publishable (or anon) key into `.env.local`:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_key
+   ```
 
-## Learn More
+2. In the [Supabase Dashboard](https://supabase.com/dashboard) → **SQL Editor**, run the full script in `supabase/schema.sql`. This creates `tasks`, `reminders`, `focus_sessions`, and `user_preferences` tables with Row Level Security.
 
-To learn more about Next.js, take a look at the following resources:
+3. In **Authentication** → **Providers**, enable Email auth (enabled by default).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Sign up at `/signup`, then use the app. **All tasks, reminders, focus sessions, and preferences are stored in Supabase** — there is no demo/sample data in the app.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Data flow:** Sign in → data loads from your database → every add/edit/delete saves to Supabase immediately.
 
-## Deploy on Vercel
+### Google sign-in
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Supabase Dashboard → **Authentication** → **Providers** → enable **Google** (add Client ID & Secret from Google Cloud Console).
+2. Supabase → **Authentication** → **URL Configuration** → add redirect URL:
+   - `http://localhost:3000/auth/callback` (dev)
+   - `https://your-domain.com/auth/callback` (production)
+3. Run `supabase/profiles.sql` if you already created tables earlier (adds the `profiles` table).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Login returns 400?
+
+A `400` on `/auth/v1/token` usually means **`invalid_credentials`** — not a broken API key. Common causes:
+
+- You have not signed up yet (use `/signup` first).
+- Wrong email or password.
+- **Email confirmation is on** — open the link in your inbox before signing in.
+
+For local development, you can disable confirmation: Supabase Dashboard → **Authentication** → **Providers** → **Email** → turn off **Confirm email**.
+
+## Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page |
+| `/login`, `/signup` | Auth (demo — redirects to dashboard) |
+| `/dashboard` | Main dashboard |
+| `/today`, `/reminder`, `/calendar`, `/focus` | App views |
+| `/analytics`, `/ai-planner`, `/integrations`, `/settings` | More app pages |
+| `/features`, `/pricing`, `/blog` | Marketing |
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- React 19
+- Tailwind CSS v4
+- Framer Motion
+- Recharts
+- Supabase (PostgreSQL + Auth)
+- Zustand (UI state + preferences cache)
+- React Hook Form + Zod
+
+## Project Structure
+
+```
+flowday/
+├── app/              # Pages & API routes
+├── components/       # UI components
+├── hooks/            # Custom React hooks
+├── lib/              # Utils, constants, API client
+├── store/            # Zustand store
+├── styles/           # CSS variables & animations
+└── types/            # TypeScript types
+```
+
+## License
+
+MIT

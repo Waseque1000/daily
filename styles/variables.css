@@ -1,0 +1,30 @@
+:root {
+  --background: #f7f8fc;
+  --card: #ffffff;
+  --primary: #5b67f1;
+  --secondary: #8b92ff;
+  --accent: #ffb86b;
+  --text-heading: #1e1e2f;
+  --text-body: #6b7280;
+  --text-muted: #a0aec0;
+  --success: #34d399;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #5b67f1;
+  --border: #e5e7eb;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  --radius-card: 16px;
+  --radius-button: 12px;
+}
+
+.dark {
+  --background: #0f172a;
+  --card: #1e293b;
+  --text-heading: #f8fafc;
+  --text-body: #94a3b8;
+  --text-muted: #64748b;
+  --border: #334155;
+}
